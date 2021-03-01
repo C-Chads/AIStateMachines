@@ -4,6 +4,7 @@
 #define SM_HCODE_CHECK(typename, elem) (elem.hcode != SM_HCODE_##typename )
 
 #define SM_VARS int state; unsigned int hcode;
+#define SM_VARS_EXTERN extern int state; extern unsigned int hcode;
 
 #define JMP_STATE(n) {sm->state = n; break;}
 #define JMP_INIT()	{sm->state = 0; break;}
@@ -16,6 +17,10 @@
 
 #define INIT_SM(typename, var) var.state = 0; var.hcode = SM_HCODE_##typename;
 
-#define ENUM_SM(typename) unsigned int SM_HCODE_##typename = 0;	enum{ sm_init_##typename = 0,
+#define SM_GLOBALS(typename) unsigned int SM_HCODE_##typename = 0
+
+#define SM_EXTERN_GLOBALS(typename) extern unsigned int SM_HCODE_##typename = 0
+
+#define ENUM_SM(typename) 	enum{ sm_init_##typename = 0,
 
 #define ENUM_END_SM };
