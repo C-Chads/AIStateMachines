@@ -19,9 +19,9 @@
 
 #define INIT_SM(typename, var) var.state = 0; var.hcode = SM_HCODE_##typename;
 
-#define SM_GLOBALS(typename) unsigned int SM_HCODE_##typename = 0
+#define SM_GLOBALS(typename) unsigned int SM_HCODE_##typename = 0;
 
-#define SM_EXTERN_GLOBALS(typename) extern unsigned int SM_HCODE_##typename = 0
+#define SM_EXTERN_GLOBALS(typename) extern unsigned int SM_HCODE_##typename;
 
 #define ENUM_SM(typename) 	enum{ sm_init_##typename = 0,
 

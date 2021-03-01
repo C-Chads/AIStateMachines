@@ -1,74 +1,20 @@
 #define LOCKSTEPTHREAD_IMPL
 #include "lockstepthread.h"
-#include "statemachine.h"
-#include <time.h>
-#include <stdlib.h>
-#include <stdio.h>
-//Typedef your state machine.
-typedef struct {
-	SM_VARS;
-	int mood;
-	int target;
-} fluffle;
+
+#include "fluffle.h"
 
 
 
-//Declare the globals.
 
-//If you are using a multi-file program, use SM_EXTERN_GLOBALS() to forward declare the implementation of the global variables.
-SM_GLOBALS(fluffle);
-//Enumerate the states of your state machine.
-//Also declares the hcode variable for this statemachine type.
-ENUM_SM(fluffle)
-happy,
-sad,
-singing,
-idle,
-changing,
-ENUM_END_SM;
 
-//Define the state machine 
-//If you are using a multi-file project,
-//use SM_EXTERN_HANDLER() to forward declare the implementation
-SM_HANDLER(fluffle)
-puts("I have awakened.\n");
-STATE(idle):
-{
-	int a = (int)(rand()%256);
-	a -= 128;
-	sm->target = a + sm->mood;
-	if(sm->target < -100)
-		sm->target = -100;
-	if(sm->target > 100)
-		sm->target = 100;
-}
-STATE(changing):
-//puts("Changing...\n");
-if(sm->target > sm->mood)
-	{sm->mood++; JMP_STATE(changing);}
-if(sm->target < sm->mood)
-	{sm->mood--; JMP_STATE(changing);}
-//We have reached the target mood.
-if(sm->mood > 80)
-	JMP_STATE(singing);
-if(sm->mood > 30)
-	JMP_STATE(happy);
-if(sm->mood < 30)
-	JMP_STATE(sad);
-JMP_STATE(idle);
-STATE(happy):
-//puts("Happy noises!\n");
-JMP_STATE(idle);
 
-STATE(singing):
-//puts("Fo la lo di!\n");
-JMP_STATE(idle);
 
-STATE(sad):
-//puts("Sad noises.\n");
-JMP_STATE(idle);
 
-END_SM_HANDLER
+
+
+
+
+
 
 
 
