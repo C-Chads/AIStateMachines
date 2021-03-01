@@ -107,7 +107,7 @@ You can tell very clearly what's happening here
 In fact, the whole thing just breaks down to a switch-case underneath, it may seem like some sort of black magic, but
 in reality this is just a cleaner, nicer, easier-to-read way of writing the same code you'd write otherwise.
 
-No you can probably tell why this is so useful!
+Now you can probably tell why this is so useful!
 
 1. Subdividing multi-frame tasks is extremely simple and intuitive- Everyone who's ever used goto in BASIC can figure it out
 
@@ -149,6 +149,20 @@ Meanwhile with the statemachine macros, you can see "JMP" (like the assembly lan
 so you know very clearly what's happening at a glance.
 
 3. Multiple entities in the exact same state will execute the exact same code.
+
+This can be used to speed up the processing of (larger, more complex) state machines by processing them in batches.
+
+```c
+//in your EC code...
+uint8_t handled[n]; 
+//Presumably you zero-out handled
+for(int i = 0; i < n; i++)
+	if(array[i].state == changing && !handled[i]){
+		SM_HANDLE_fluffle(array+i);
+		handled[i] = 1;
+	}
+//Repeat for other states
+```
 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
