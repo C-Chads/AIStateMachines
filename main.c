@@ -53,15 +53,15 @@ if(sm->mood < 30)
 	JMP_STATE(sad);
 JMP_STATE(idle);
 STATE(happy):
-puts("Happy noises!\n");
+//puts("Happy noises!\n");
 JMP_STATE(idle);
 
 STATE(singing):
-puts("Fo la lo di!\n");
+//puts("Fo la lo di!\n");
 JMP_STATE(idle);
 
 STATE(sad):
-puts("Sad noises.\n");
+//puts("Sad noises.\n");
 JMP_STATE(idle);
 
 END_SM_HANDLER
@@ -74,18 +74,27 @@ unsigned long long n = 10;
 void process_state_machines(){
 	SM_NEXT_HCODE(fluffle);	//"Handled Code" this is a way of avoiding creating an array of booleans.
 	//Cache efficient way to handle states.
+	uint32_t q = 0;
 	for(uint32_t i = 0; i < n; i++)
 		if(array[i].state == happy && SM_HCODE_CHECK(fluffle, array[i]))
-			SM_HANDLE_fluffle(array+i);
+			{SM_HANDLE_fluffle(array+i);q++;}
+	printf("We had %u fluffles that were happy.\n", q);
+	q = 0;
 	for(uint32_t i = 0; i < n; i++)
 			if(array[i].state == sad && SM_HCODE_CHECK(fluffle, array[i]))
-				SM_HANDLE_fluffle(array+i);
+				{SM_HANDLE_fluffle(array+i);q++;}
+	printf("We had %u fluffles that were sad.\n", q);
+	q = 0;
 	for(uint32_t i = 0; i < n; i++)
 			if(array[i].state == singing && SM_HCODE_CHECK(fluffle, array[i]))
-				SM_HANDLE_fluffle(array+i);
+				{SM_HANDLE_fluffle(array+i);q++;}
+	printf("We had %u fluffles that were singing.\n", q);
+	q = 0;
 	for(uint32_t i = 0; i < n; i++)
 			if(array[i].state == changing && SM_HCODE_CHECK(fluffle, array[i]))
-				SM_HANDLE_fluffle(array+i);
+				{SM_HANDLE_fluffle(array+i);q++;}
+	printf("We had %u fluffles that were changing.\n", q);
+	q = 0;
 	for(uint32_t i = 0; i < n; i++)		//Handle the idle, init, and default states (for state machines that started with an invalid state)
 			if(SM_HCODE_CHECK(fluffle, array[i]))
 				SM_HANDLE_fluffle(array+i);
