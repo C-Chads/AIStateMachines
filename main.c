@@ -13,7 +13,10 @@ typedef struct {
 
 
 
+
+//SM_GLOBALS(fluffle);
 //Enumerate the states of your state machine.
+//Also declares the hcode variable for this statemachine type.
 ENUM_SM(fluffle)
 happy,
 sad,
@@ -69,8 +72,23 @@ fluffle* array = NULL;
 unsigned long long n = 10;
 
 void process_state_machines(){
-	for(unsigned long long i = 0; i < n; i++)
-		SM_HANDLE_fluffle(array+i);
+	SM_NEXT_HCODE(fluffle);	//"Handled Code" this is a way of avoiding creating an array of booleans.
+	//Cache efficient way to handle states.
+	for(uint32_t i = 0; i < n; i++)
+		if(array[i].state == happy && SM_HCODE_CHECK(fluffle, array[i]))
+			SM_HANDLE_fluffle(array+i);
+	for(uint32_t i = 0; i < n; i++)
+			if(array[i].state == sad && SM_HCODE_CHECK(fluffle, array[i]))
+				SM_HANDLE_fluffle(array+i);
+	for(uint32_t i = 0; i < n; i++)
+			if(array[i].state == singing && SM_HCODE_CHECK(fluffle, array[i]))
+				SM_HANDLE_fluffle(array+i);
+	for(uint32_t i = 0; i < n; i++)
+			if(array[i].state == changing && SM_HCODE_CHECK(fluffle, array[i]))
+				SM_HANDLE_fluffle(array+i);
+	for(uint32_t i = 0; i < n; i++)		//Handle the idle, init, and default states (for state machines that started with an invalid state)
+			if(SM_HCODE_CHECK(fluffle, array[i]))
+				SM_HANDLE_fluffle(array+i);
 }
 
 int main(int argc, char** argv){
@@ -83,7 +101,7 @@ int main(int argc, char** argv){
 	srand(time(NULL));
 	for(unsigned long long i = 0; i < n; i++){
 		array[i].mood = 0;
-		INIT_SM(array[i]);
+		INIT_SM(fluffle, array[i]);
 	}
 	lsthread t1;
 	init_lsthread(&t1);

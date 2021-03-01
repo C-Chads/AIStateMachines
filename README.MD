@@ -150,19 +150,44 @@ so you know very clearly what's happening at a glance.
 
 3. Multiple entities in the exact same state will execute the exact same code.
 
-This can be used to speed up the processing of (larger, more complex) state machines by processing them in batches.
+This means fewer instruction cache misses for large, complex state machines.
+
+This is done with the "hcode" system
+
+Every fluffle stores an "hcode" which tells the processing unit whether it has "handled" the fluffle this frame.
+when the handler is invoked on a fluffle, its hcode is updated to indicate that it has been handled.
+
+The hcode of the current frame iterates every processing cycle.
+
+Fluffles in the same state can be processed using the exact same code which can be optimized for minimal branching.
+
+This is the code which handles fluffles in identical states.
 
 ```c
-//in your EC code...
-uint8_t handled[n]; 
-//Presumably you zero-out handled
-for(int i = 0; i < n; i++)
-	if(array[i].state == changing && !handled[i]){
-		SM_HANDLE_fluffle(array+i);
-		handled[i] = 1;
-	}
-//Repeat for other states
+
+void process_state_machines(){
+	SM_NEXT_HCODE(fluffle);	//"Handled Code" this is a way of avoiding creating an array of booleans.
+	//Cache efficient way to handle states.
+	for(uint32_t i = 0; i < n; i++)
+		if(array[i].state == happy && SM_HCODE_CHECK(fluffle, array[i]))
+			SM_HANDLE_fluffle(array+i);
+	for(uint32_t i = 0; i < n; i++)
+			if(array[i].state == sad && SM_HCODE_CHECK(fluffle, array[i]))
+				SM_HANDLE_fluffle(array+i);
+	for(uint32_t i = 0; i < n; i++)
+			if(array[i].state == singing && SM_HCODE_CHECK(fluffle, array[i]))
+				SM_HANDLE_fluffle(array+i);
+	for(uint32_t i = 0; i < n; i++)
+			if(array[i].state == changing && SM_HCODE_CHECK(fluffle, array[i]))
+				SM_HANDLE_fluffle(array+i);
+	for(uint32_t i = 0; i < n; i++)		//Handle the idle, init, and default states (for state machines that started with an invalid state)
+			if(SM_HCODE_CHECK(fluffle, array[i]))
+				SM_HANDLE_fluffle(array+i);
+}
+
 ```
+
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
