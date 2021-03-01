@@ -11,6 +11,8 @@
 
 #define SM_HANDLER(typename) void SM_HANDLE_##typename( typename *sm) { sm->hcode = SM_HCODE_##typename ; switch(sm->state) { case 0: default:
 
+#define SM_EXTERN_HANDLER(typename) extern void SM_HANDLE_##typename( typename *sm);
+
 #define STATE(n)	case n
 
 #define END_SM_HANDLER	} }

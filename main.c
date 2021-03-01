@@ -13,7 +13,9 @@ typedef struct {
 
 
 
+//Declare the globals.
 
+//If you are using a multi-file program, use SM_EXTERN_GLOBALS() to forward declare the implementation of the global variables.
 SM_GLOBALS(fluffle);
 //Enumerate the states of your state machine.
 //Also declares the hcode variable for this statemachine type.
@@ -26,7 +28,9 @@ changing,
 ENUM_END_SM;
 
 //Define the state machine 
-static inline SM_HANDLER(fluffle)
+//If you are using a multi-file project,
+//use SM_EXTERN_HANDLER() to forward declare the implementation
+SM_HANDLER(fluffle)
 puts("I have awakened.\n");
 STATE(idle):
 {
