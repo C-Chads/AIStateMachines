@@ -1,6 +1,7 @@
 #include <stdint.h>
+//CC0 public domain state machine framework.
 
-#define SM_VARS uint16_t state
+#define SM_VARS int state
 
 #define JMP_STATE(n) {sm->state = n; break;}
 #define JMP_INIT()	{sm->state = 0; break;}
