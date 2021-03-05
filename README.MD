@@ -1,9 +1,9 @@
 # State machines for C
 
-A basic framework for building state machine structs and handler functions, primarily for use in entity component systems.
+A framework and notation for building state machine structs and handler functions, primarily for use in entity component systems.
 
 Entity component systems are at their fastest (smallest number of cache misses, greatest compiletime optimization) when
-the same code is run on every object in a contiguous array of objects, with their entire state (Except global state)
+the same code is run on every object in a contiguous array of objects, with their entire state to be processed that iteration
 being contained in that contiguous space.
 
 Unfortunately, programmers like to write large, complicated game entities with dozens of behaviors.
@@ -187,7 +187,78 @@ void process_state_machines(){
 
 ```
 
+### How would I use this in a game or engine?
 
+You might have trouble figuring out how you can integrate this code into your engine, for the following reasons:
+
+1) How do I reduce my AI into a state machine?
+
+2) AI's need to react to each other and the environment. How do state machines interact with each other?
+
+3) Large state machines may still be slow due to large strides in their arrays.
+
+4) Complex behaviors can still be very slow.
+
+Problem 1 is a matter of design refactoring, by definition, your computer *is* (an amalgamation of) state machine(s).
+
+Problem 2 has a few different solutions, some of which may be more useful in some situations than others.
+
+1) Add "Perception" variables to your state machines which they can act upon in their state machine code.
+
+	* This is the most elegant solution.
+
+2) Store global state which is unchanging during the execution of the state machines which can be accessed by all of them
+
+	* For state that needs to be read (not written) by all state machines, this is optimal.
+
+3) Store global state from the previous iteration for the state machines to access
+
+	* You should avoid this and where possible cache information from the previous iteration inside each state machine.
+
+You should NOT opt to have state machines interact with each other during the same iteration.
+
+Doing so will not only cause an O(n^2) or at best O(logn) problem to emerge, but also cause significant numbers of cache misses
+for large state machines
+
+Problem 3 can be solved by offloading as much state as possible to constant 
+(During the SM_HANDLE function call, you can change it between SM iterations)
+global state.
+
+Problem 4 can be solved by dividing behavior code across iterations.
+
+### Tips for optimization
+
+1) Try to reduce the amount of per-object state stored. If multiple state machines are going to read the same data, store it in one place.
+
+2) When you want to write state machines which are reactive to their environment (or each other),
+perform checks 
+
+3) Avoid large branches per-frame. If a decision in code leads to two
+(computationally complex) outcomes, offload it until next iteration.
+
+4) Avoid large amounts of code being executed per-state-machine per iteration. Split code for complex actions
+in state machines into actions across multiple iterations.
+
+you can easily do it like this:
+
+```c
+STATE(action):
+	//your code here.
+	//You might have to store some state for the continuation of this action into the state machine.
+JMP_STATE(actionpart2);
+STATE(actionpart2):
+	//The rest of your code here...
+```
+
+(Notice again how nice this notation is. Imagine doing this in C++ code with multiple functions and tons of ifs.
+It would be 100% unreadable.)
+
+### Important notes
+
+1) Variables (static or not) you declare inside the SM_HANDLE function ***will not*** have the same value the next iteration.
+Store state machine variables that must be saved INSIDE THE STATE MACHINE STRUCT.
+
+2) I will continue to write this section later.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
