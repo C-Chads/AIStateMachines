@@ -47,7 +47,8 @@ void process_state_machines(){
 	q = 0;
 	for(uint32_t i = 0; i < n; i++)		//Handle the idle, init, and default states (for state machines that started with an invalid state)
 			if(SM_HCODE_CHECK(fluffle, array[i]))
-				SM_HANDLE_fluffle(array+i);
+				{SM_HANDLE_fluffle(array+i);q++;}
+	printf("We had %u fluffles that were doing anything else.\n", q);
 }
 
 int main(int argc, char** argv){

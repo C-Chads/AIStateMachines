@@ -13,7 +13,6 @@ typedef struct {
 SM_EXTERN_GLOBALS(fluffle);
 
 //Enumerate the states of your state machine.
-//Also declares the hcode variable for this statemachine type.
 ENUM_SM(fluffle)
 happy,
 sad,

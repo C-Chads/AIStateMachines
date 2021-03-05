@@ -4,8 +4,6 @@ SM_GLOBALS(fluffle);
 
 
 //Define the state machine 
-//If you are using a multi-file project,
-//use SM_EXTERN_HANDLER() to forward declare the implementation
 
 SM_HANDLER(fluffle)
 puts("I have awakened.\n");
