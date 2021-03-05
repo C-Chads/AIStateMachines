@@ -6,7 +6,7 @@ SM_GLOBALS(fluffle);
 //Define the state machine 
 
 SM_HANDLER(fluffle)
-puts("I have awakened.\n");
+//puts("I have awakened.\n");
 STATE(idle):
 {
 	int a = (int)(rand()%256);
