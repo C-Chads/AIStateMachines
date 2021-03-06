@@ -21,7 +21,7 @@
 fluffle* array = NULL;
 unsigned long long n = 10;
 
-void process_state_machines(){
+void process_state_machines(void* arg){
 	SM_NEXT_HCODE(fluffle);	//"Handled Code" this is a way of avoiding creating an array of booleans.
 	//Cache efficient way to handle states.
 	uint32_t q = 0;
